@@ -8,4 +8,4 @@ let QueriesSchema = new Schema({
 
 
 // Export the model
-module.exports = mongoose.model('Product', QueriesSchema);
+module.exports = mongoose.model('Query', QueriesSchema);
