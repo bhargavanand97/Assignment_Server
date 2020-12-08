@@ -1,8 +1,11 @@
+const { response } = require('express');
 const Contact = require('../models/contacts.model');
 const Query = require('../models/queries.model')
 
 // Actions
-
+exports.test = function (req, res) {
+    res.send("test succesful");
+}
 exports.contact_create = function (req, res, next) {
     let contact = new Contact(
         {
@@ -19,6 +22,8 @@ exports.contact_create = function (req, res, next) {
 };
 
 exports.query_create = function (req, res, next) {
+    let ifDuplicate = checkDuplicate(req.body.email);
+
     let query = new Query(
         {
             email: req.body.email,
@@ -30,6 +35,37 @@ exports.query_create = function (req, res, next) {
         if (err) {
             return next(err);
         }
-        res.send('Query Created successfully')
+        if (ifDuplicate) {
+            res.send('Welcome Back ! Query Created successfully')
+        }
+        else {
+            res.send('Query Created Succesfully');
+        }
+
     })
+}
+exports.contact_details = function (req, res, next) {
+    console.log("email is ", req.body.email);
+    Contact.find({ email: 'ibhargavanand@gmail.coma' }, function (err, contact) {
+        console.log(req.params.id);
+        if (err) return next(err);
+        res.send("found");
+        console.log(contact);
+    })
+};
+//Functions 
+checkDuplicate = (email) => {
+    console.log(email);
+    Contact.find({
+        email: email
+    }), function (err, duplicate) {
+        if (err) {
+            console.log(err);
+            return false;
+        }
+        else {
+            console.log("Data found");
+            return true;
+        }
+    }
 }
